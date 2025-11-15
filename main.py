@@ -5,14 +5,12 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiohttp import web
 import pytz
 
-# Environment variables from Railway
 BOT_TOKEN = os.getenv("8142263044:AAE2IdeM6psQJzPvFY0G3KpZzSQV1j8pGPg")
 CHAT_ID = os.getenv("5755871976")
 
 bot = Bot(token=BOT_TOKEN)
 scheduler = AsyncIOScheduler(timezone="America/New_York")
 
-# Killzone messages: (HH:MM, message text)
 killzone_messages = [
     ("18:00", "1H Left for Asia Killzone"),
     ("19:00", "Asia Killzone Begins"),
@@ -35,7 +33,6 @@ def schedule_jobs():
         hour, minute = map(int, time_str.split(":"))
         scheduler.add_job(send_msg, 'cron', day_of_week='mon-fri', hour=hour, minute=minute, args=[msg])
 
-# Optional: small web server for uptime pings (keep Railway free instance awake)
 async def handle_health(request):
     return web.Response(text="OK")
 
@@ -52,7 +49,6 @@ async def main():
     scheduler.start()
     await start_webserver()
     print("🤖 Forex Killzone Bot Started Successfully")
-    # Keep the bot alive (long polling)
     while True:
         await asyncio.sleep(3600)
 
